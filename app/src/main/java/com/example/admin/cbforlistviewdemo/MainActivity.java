@@ -2,6 +2,7 @@ package com.example.admin.cbforlistviewdemo;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -47,9 +48,9 @@ public class MainActivity extends AppCompatActivity implements OnShowItemClickLi
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
 
-        dataList = new ArrayList<ItemBean>();
-        selectList = new ArrayList<ItemBean>();
-        for (int i = 0; i < 20; i++) {
+        dataList = new ArrayList<>();
+        selectList = new ArrayList<>();
+        for (int i = 1; i <= 20; i++) {
             dataList.add(new ItemBean("item " + i, false, false));
         }
         adapter = new Adapter(dataList, this);
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements OnShowItemClickLi
                     }
                     adapter.notifyDataSetChanged();
                     showOpervate();
-                    listView.setLongClickable(false);
+                    listView.setLongClickable(true);
                 }
                 return true;
             }
@@ -142,8 +143,8 @@ public class MainActivity extends AppCompatActivity implements OnShowItemClickLi
                             selectList.add(bean);
                         }
                     }
+                    adapter.notifyDataSetChanged();
                 }
-                adapter.notifyDataSetChanged();
             }
         });
         tvInvertSelect.setOnClickListener(new View.OnClickListener() {
@@ -152,14 +153,14 @@ public class MainActivity extends AppCompatActivity implements OnShowItemClickLi
                 for (ItemBean bean : dataList){
                     if (!bean.isChecked()){
                         bean.setChecked(true);
-                        if (!selectList.contains(bean)) {
                             selectList.add(bean);
-                        }
+                        Log.e("selectList1:",selectList.size()+"");
                     }else {
                         bean.setChecked(false);
-                        if (!selectList.contains(bean)) {
+
                             selectList.remove(bean);
-                        }
+                            Log.e("selectList2:",selectList.size()+"");
+
                     }
                 }
                 adapter.notifyDataSetChanged();
@@ -170,9 +171,15 @@ public class MainActivity extends AppCompatActivity implements OnShowItemClickLi
             @Override
             public void onClick(View v) {
                 if (selectList != null && selectList.size() > 0) {
+//                    Toast.makeText(MainActivity.this,"selectList3:"+selectList.size(),Toast.LENGTH_SHORT).show();
+                    Log.e("selectList3:",selectList.size()+"");
                     dataList.removeAll(selectList);
+//                    for (ItemBean bean : dataList) {
+//                        bean.setShow(false);
+//                    }
                     adapter.notifyDataSetChanged();
                     selectList.clear();
+//                    dismissOperate();
                 } else {
                     Toast.makeText(MainActivity.this, "请选择条目", Toast.LENGTH_SHORT).show();
                 }
